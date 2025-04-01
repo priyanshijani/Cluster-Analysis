@@ -52,7 +52,7 @@ library ("cluster")
 We will use k-mean clustering to group countries in Europe together based on their economic
 statistic. The idea is to create a group representation of country that are similiar together.
 
-The dataframe should have 22 rows and 5 columns and is a data about basic information of
+The dataset used is 'Europe.csv'. The dataframe should have 22 rows and 5 columns and is a data about basic information of
 countries in Europe. (This is older dataset so the number may no longer reflect reality)
 
 ```
@@ -295,6 +295,7 @@ _# Plot Population against GDP_
 European countries were grouped together using numerical data. Clustering technique changes when there is categorical variables in the data. This is showed in the following example.
 
 ## Understanding the data 
+The dataset used for analysis is 'Brewdog.csv'.
 ```
 data <- read.csv("brewdog.csv", header=TRUE, stringsAsFactors = T)	
 ```
