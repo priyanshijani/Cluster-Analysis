@@ -1,24 +1,21 @@
 # Clustering Analysis: numerical & categorical data
 
-## Table of Contents
+### Table of Contents
 
-### K-Mean Clustering: Grouping European Countries together 1
+### K-Mean Clustering: Grouping European Countries together (with Numerical Variables)
+1. Package installation in R 
+2. Grouping country in Europe together? 
+3. Normalisation 
+4. Dissimilarity Measurement – Euclidean 
+5. Determine the number of clusters 
+6. Visualize & study the clusters 
+### K-Mean Clustering: Grouping Beer Companies together (with Categorical Variables)
+1. Understanding the Data
+2. Determine the number of clusters
+3. Determining the clusters
+4. Visualize & study the clusters 
 
-#### Package installation in R 1
-
-#### Grouping country in Europe together? 2
-
-#### Normalisation 3
-
-#### Dissimilarity Measurement – Euclidean 3
-
-#### Determine the number of clusters 3
-
-#### Visualize & understand clusters 7
-
-
-
-# K-Mean Clustering: Grouping European Countries together
+# K-Mean Clustering: Grouping European Countries together (with Numerical Variables)
 
 
 In this project, I will attempt how to establish a pattern from data using K-Mean clustering. This
@@ -293,6 +290,99 @@ _# Plot Population against GDP_
 **plot** (ed[ 2 **:** 5 ], col=km **$** cluster)
 ```
 ![image](https://github.com/user-attachments/assets/bd4ea3be-64d3-431b-bbba-8696dcd4ec74)
+
+# K-Mean Clustering: Grouping Beer Companies together (with Categorical Variables)
+European countries were grouped together using numerical data. Clustering technique changes when there is categorical variables in the data. This is showed in the following example.
+
+## Understanding the data 
+```
+data <- read.csv("brewdog.csv", header=TRUE, stringsAsFactors = T)	
+```
+You will see that ABV, Bottle.Size and Price are numerical variables while ‘Style’ is a categorical variable, listing the type of beer:
+
+![image](https://github.com/user-attachments/assets/d7993ea3-c73a-4908-a2b5-0fc559b854c8)
+
+Categorical data cannot be measured using normal distance measures like Euclidean distance. The ‘dist’ function you used earlier to calculate the difference matrix will throw a warning if provided with categorical data and then calculate while ignoring text. You can check this using:
+```
+dismatrix <- dist(data[2:5])	
+## Warning in dist(data[2:5]): NAs introduced by coercion
+```
+Fortunately, there is another function in R for calculating a dissimilarity matrix for hierarchical clustering when you have mixed data types. This function is called daisy and is built into the cluster package. Create a dissimilarity matrix with mixed variables using:
+
+The function will automatically use Euclidean distance for numerical data and Gower’s distance for categor- ical data. To see an explanation of the Gower’s distance measure type:
+
+## Determine the number of clusters
+
+However, nbclust for k-mean clustering doesn’t work with dissimilarity matrix and Gower’s distance. It also doesn’t handle category with little deviation quite well (bottle size for instance here). As such, it will be determining number of clusters based on ABV and Price.
+```
+nb <- NbClust(data = data[c(3,5)],min.nc = 2,
+              max.nc = 10, method = "kmeans")
+```
+![image](https://github.com/user-attachments/assets/bed29aad-2f99-41f8-8747-c21c306badef)
+
+```
+## *** : The Hubert index is a graphical method of determining the number of clusters.
+##	In the plot of Hubert index, we seek a significant knee that corresponds to a
+##	significant increase of the value of the measure i.e the significant peak in Hubert ##	index second differences plot.
+##
+##	KL	CH Hartigan	CCC	Scott Marriot TrCovW TraceW
+## Number_clusters	2.0000	6.0000	4.0000 6.0000	4.0000	4.0000 3.0000 4.0000
+```
+![image](https://github.com/user-attachments/assets/e01260e7-9b5e-47b0-8370-f9f955c6b2f6)
+
+```
+## *** : The D index is a graphical method of determining the number of clusters.
+##	In the plot of D index, we seek a significant knee (the significant peak in Dindex ##	second differences plot) that corresponds to a significant increase of the value of ##	the measure.
+##
+## ******************************************************************* ## * Among all indices:
+## * 8 proposed 2 as the best number of clusters ## * 3 proposed 3 as the best number of clusters ## * 6 proposed 4 as the best number of clusters ## * 2 proposed 6 as the best number of clusters ## * 2 proposed 9 as the best number of clusters ## * 3 proposed 10 as the best number of clusters ##
+##	***** Conclusion ***** ##
+## * According to the majority rule, the best number of clusters is	2 ##
+##
+## *******************************************************************
+```
+```
+nb$Best.nc
+```
+```
+## Value_Index	27.1229 164.9889	25.1112 8.1863 34.3225	0.2374 0.2048 0.3509
+##	Friedman		Rubin	Cindex	DB Silhouette	Duda PseudoT2 ## Number_clusters		9.0000	9.0000 10.0000 10.0000	2.0000 2.0000	3.0000
+## Value_Index	173.6749 -33.5061	0.0814	0.4329	0.7114 0.3195	36.9266
+##	Beale Ratkowsky	Ball  PtBiserial	Frey McClain	Dunn Hubert
+##	Number_clusters	2.0000	2.0000 3.0000	2.0000	4.0000	2.0000 2.0000	0
+##	Value_Index	1.9172	0.6268 0.2868	0.8873	1.8995	0.2585 0.7474	0
+##		SDindex Dindex	SDbw			
+##	Number_clusters	4.0000	0 10.000
+##	Value_Index	8.8274	0	0.013
+```
+```
+nb$Best.partition
+```
+```
+##	[1] 1 1 2 2 2 2 2 1 1 1 1 2 2 1 1 2 1 1 1 1 1 1 2 2 1 2 1 1 1
+```
+## Determining the clusters
+
+Now we can use the dissimilarity matrix (dm) calculated by daisy to perform k-mean clustering. To do this we can use the agnes() function with:
+```
+clust <- kmeans(x=dm,2)	
+```
+As the input (dm) is a dissimilarity matrix, the diss attribute is set to TRUE. Now you can plot the dendrogram using plot(clust, labels=data$Name, which.plots= 2) which gives:
+```
+plot(data[2:5], col=clust$cluster)
+```
+![image](https://github.com/user-attachments/assets/38aa30db-a552-467d-8718-51c6bfdd96e9)
+
+ 
+## Visualize and study different Clusters
+We can get the cluster that the beers is assigned to from clust object by using clust$cluster. We can then study the output to see how the beers have been clustered.
+
+```
+data$cluster <- clust$cluster
+data[order(data[['cluster']]),]
+```
+![image](https://github.com/user-attachments/assets/ed5f1bf7-cccc-4e65-b00f-9c4b03d1f13f)
+
 
 
 
