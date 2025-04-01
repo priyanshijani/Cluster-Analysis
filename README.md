@@ -170,6 +170,7 @@ method according to all of these calculation:
 ```
 res <- **NbClust** (ed[ 2 **:** 5 ], min.nc= 2 , max.nc= 15 , method="kmeans")
 ```
+![image](https://github.com/user-attachments/assets/1550168b-cb0c-49e0-a0b9-934f8e823419)
 
 ```
 ## *** : The Hubert index is a graphical method of determining the number of clusters.
@@ -179,6 +180,7 @@ to a
 in Hubert ## index second differences plot.
 ##
 ```
+![image](https://github.com/user-attachments/assets/02017ca4-cb67-4ec9-89a5-15f1a8867431)
 
 ```
 ## *** : The D index is a graphical method of determining the number of clusters.
@@ -277,6 +279,7 @@ eddf <- **data.frame** (ed, km **$** cluster)
 _# Sort data based on cluster number_
 eddf[ **order** (eddf **$** km.cluster),]
 ```
+![image](https://github.com/user-attachments/assets/6b278a3b-f750-4663-ab6d-21586cb0c4f7)
 
 
 We can then try to visualize it on two axis with color as cluster, there does appear to be
@@ -289,10 +292,8 @@ good clustering based on k-mean as can be seen across different combination.
 _# Plot Population against GDP_
 **plot** (ed[ 2 **:** 5 ], col=km **$** cluster)
 ```
+![image](https://github.com/user-attachments/assets/bd4ea3be-64d3-431b-bbba-8696dcd4ec74)
 
-```
-# Add labels
-# text(ed$Population,ed$GDP, ed$Name, cex=0.6, pos=4)
-```
+
 
 
